@@ -10,12 +10,35 @@ go get github.com/predictpaul/common
 
 ## Usage
 
+### Unified API Response
+
+```go
+import "github.com/predictpaul/common"
+
+// Parse API response with generics
+var resp common.Response[polymarket.Order]
+json.Unmarshal(body, &resp)
+
+if resp.Code == common.CodeSuccess {
+    order := resp.Data
+    fmt.Printf("Order ID: %s\n", order.ID)
+}
+
+// Paginated response
+var listResp common.Response[common.PageData[kalshi.OrderResponse]]
+json.Unmarshal(body, &listResp)
+
+for _, order := range listResp.Data.Data {
+    fmt.Printf("Order: %s\n", order.OrderID)
+}
+```
+
 ### Polymarket Types
 
 ```go
 import "github.com/predictpaul/common/polymarket"
 
-// Market data
+// Market data from CLOB API
 var market polymarket.ClobMarket
 
 // Check market status
@@ -31,9 +54,10 @@ if market.IsSettled() {
 // Get unified status: "open", "closed", or "settled"
 status := market.GetUnifiedStatus()
 
-// Trade data
-var trade polymarket.Trade
-fmt.Printf("Trade ID: %s, Side: %s, Size: %s\n", trade.ID, trade.Side, trade.Size)
+// API Response types
+var order polymarket.Order
+var balance polymarket.BalanceResponse
+var positions []polymarket.Position
 ```
 
 ### Kalshi Types
@@ -45,26 +69,55 @@ import "github.com/predictpaul/common/kalshi"
 var market kalshi.Market
 fmt.Printf("Ticker: %s, Status: %s\n", market.Ticker, market.Status)
 
-// Order data
-var order kalshi.Order
-fmt.Printf("Order ID: %s, Side: %s, Action: %s\n", order.OrderID, order.Side, order.Action)
+// API Response types
+var orderResp kalshi.OrderResponse
+var accountResp kalshi.AccountResponse
+var flowResp kalshi.FlowResponse
 
-// Position data
-var position kalshi.Position
-fmt.Printf("Ticker: %s, Position: %d\n", position.Ticker, position.Position)
+// Check order status
+if orderResp.Status == kalshi.APIOrderStatusFilled {
+    fmt.Println("Order filled")
+}
 
 // Orderbook
 var orderbook kalshi.Orderbook
 yesLevels := orderbook.GetYesLevels()
-noLevels := orderbook.GetNoLevels()
 for _, level := range yesLevels {
     fmt.Printf("Price: %d, Count: %d\n", level.Price, level.Count)
 }
 ```
 
+### Admin Types
+
+```go
+import "github.com/predictpaul/common/admin"
+
+// Node configuration
+var node admin.Node
+if node.Status == admin.NodeStatusEnabled {
+    fmt.Printf("Node %s is enabled\n", node.URL)
+}
+
+// Wallet configuration
+var wallet admin.Wallet
+
+// Market configuration
+var marketConfig admin.MarketConfig
+```
+
 ## Type Reference
 
-### Polymarket
+### Common (github.com/predictpaul/common)
+
+| Type | Description |
+|------|-------------|
+| `Response[T]` | Unified API response wrapper |
+| `PageData[T]` | Paginated data wrapper |
+| `CodeSuccess` | Success code (0) |
+| `CodeFailed` | Failed code (101) |
+| `CodeUnauthorized` | Unauthorized code (102) |
+
+### Polymarket Platform Types (github.com/predictpaul/common/polymarket)
 
 | Type | Description |
 |------|-------------|
@@ -77,7 +130,22 @@ for _, level := range yesLevels {
 | `TradeParams` | Trade query parameters |
 | `TradesResponse` | Paginated trade list response |
 
-### Kalshi
+### Polymarket API Response Types
+
+| Type | Description |
+|------|-------------|
+| `Order` | Order response data |
+| `OrderListResponse` | Order list with pagination |
+| `CancelBatchResponse` | Batch cancel result |
+| `SyncResponse` | Sync result |
+| `Account` | User account data |
+| `TokenAccount` | Token position data |
+| `WithdrawResponse` | Withdraw result |
+| `SettleResult` | Single settle result |
+| `BalanceResponse` | Balance summary |
+| `Position` | Position with PnL info |
+
+### Kalshi Platform Types (github.com/predictpaul/common/kalshi)
 
 | Type | Description |
 |------|-------------|
@@ -85,7 +153,7 @@ for _, level := range yesLevels {
 | `Action` | Order action (buy, sell) |
 | `OrderType` | Order type (limit, market) |
 | `OrderStatus` | Order status (resting, canceled, executed, pending) |
-| `MarketStatus` | Market status (initialized, inactive, active, closed, determined, disputed, amended, finalized) |
+| `MarketStatus` | Market status |
 | `Market` | Market data |
 | `Order` | Order data |
 | `Position` | User position |
@@ -94,6 +162,45 @@ for _, level := range yesLevels {
 | `Settlement` | Market settlement |
 | `Orderbook` | Order book data |
 | `CreateOrderParams` | Order creation parameters |
+
+### Kalshi API Response Types
+
+| Type | Description |
+|------|-------------|
+| `OrderResponse` | Order response data |
+| `AccountResponse` | Account response data |
+| `FlowResponse` | Fund flow record |
+| `MarketResponse` | Market response data |
+| `MarketListResponse` | Market list with cursor |
+| `OrderbookResponse` | Orderbook data |
+| `SettleResponse` | Market settle result |
+
+### Kalshi Constants
+
+| Constant | Value | Description |
+|----------|-------|-------------|
+| `FlowTypeRecharge` | 1 | Deposit |
+| `FlowTypeWithdraw` | 2 | Withdraw |
+| `FlowTypeBuy` | 3 | Buy |
+| `FlowTypeSell` | 4 | Sell |
+| `FlowTypeSettle` | 5 | Settlement |
+| `FlowTypeFee` | 6 | Fee |
+| `FlowTypeFreeze` | 7 | Freeze |
+| `FlowTypeUnfreeze` | 8 | Unfreeze |
+| `APIOrderStatusPending` | 0 | Pending |
+| `APIOrderStatusResting` | 1 | Resting |
+| `APIOrderStatusFilled` | 2 | Filled |
+| `APIOrderStatusCanceled` | 3 | Canceled |
+| `APIOrderStatusPartiallyFilled` | 4 | Partially filled |
+| `APIOrderStatusSettled` | 5 | Settled |
+
+### Admin Types (github.com/predictpaul/common/admin)
+
+| Type | Description |
+|------|-------------|
+| `Node` | Blockchain node configuration |
+| `Wallet` | Wallet configuration |
+| `MarketConfig` | Market account configuration |
 
 ## License
 
