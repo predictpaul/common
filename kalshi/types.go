@@ -91,6 +91,42 @@ type Market struct {
 	RiskLimitCents int64        `json:"risk_limit_cents"`
 }
 
+// IsSettled returns whether the market has been settled.
+func (m *Market) IsSettled() bool {
+	return m.Status == MarketStatusFinalized
+}
+
+// IsClosed returns whether the market is closed.
+func (m *Market) IsClosed() bool {
+	return m.Status == MarketStatusClosed ||
+		m.Status == MarketStatusDetermined ||
+		m.Status == MarketStatusFinalized
+}
+
+// GetUnifiedStatus returns a unified status string.
+// Kalshi status mapping:
+//   - active -> open
+//   - finalized -> settled
+//   - closed/determined -> closed
+//   - others -> the original status
+func (m *Market) GetUnifiedStatus() string {
+	switch m.Status {
+	case MarketStatusActive:
+		return "open"
+	case MarketStatusFinalized:
+		return "settled"
+	case MarketStatusClosed, MarketStatusDetermined:
+		return "closed"
+	default:
+		return string(m.Status)
+	}
+}
+
+// IsYesWinner returns whether the market result is "yes".
+func (m *Market) IsYesWinner() bool {
+	return m.Result == "yes"
+}
+
 // Order represents a Kalshi order.
 type Order struct {
 	OrderID              string      `json:"order_id"`
@@ -128,6 +164,31 @@ type Order struct {
 	OrderGroupID         string      `json:"order_group_id"`
 	CancelOrderOnPause   bool        `json:"cancel_order_on_pause"`
 	SelfTradePreventType string      `json:"self_trade_prevention_type"`
+}
+
+// TotalFillCount returns the total number of filled contracts.
+func (o *Order) TotalFillCount() int {
+	return o.TakerFillCount + o.MakerFillCount
+}
+
+// TotalFillCost returns the total cost of filled contracts.
+func (o *Order) TotalFillCost() int {
+	return o.TakerFillCost + o.MakerFillCost
+}
+
+// IsFilled returns whether the order has been fully filled.
+func (o *Order) IsFilled() bool {
+	return o.Status == OrderStatusExecuted
+}
+
+// IsCanceled returns whether the order has been canceled.
+func (o *Order) IsCanceled() bool {
+	return o.Status == OrderStatusCanceled
+}
+
+// IsResting returns whether the order is resting in the order book.
+func (o *Order) IsResting() bool {
+	return o.Status == OrderStatusResting
 }
 
 // Position represents a user's position in a market.
