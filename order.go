@@ -84,10 +84,11 @@ type OrderHistoryQuery struct {
 type OrderHistoryItem struct {
 	OrderID   string `json:"order_id"`
 	CreatedAt string `json:"created_at"`
-	Type      string `json:"type"`      // BUY / SELL
-	Source    string `json:"source"`    // POLYMARKET / KALSHI
+	Type      string `json:"type"`       // BUY / SELL
+	OrderType string `json:"order_type"` // MARKET / LIMIT / STOP
+	Source    string `json:"source"`     // POLYMARKET / KALSHI
 	EventID   string `json:"event_id"`
-	Side      string `json:"side"`      // YES / NO
+	Side      string `json:"side"`       // YES / NO
 	Price     string `json:"price"`
 	Shares    string `json:"shares"`
 	Filled    string `json:"filled"`
@@ -102,6 +103,54 @@ type OrderHistoryResponse struct {
 	Page     int                `json:"page"`
 	PageSize int                `json:"page_size"`
 	Orders   []OrderHistoryItem `json:"orders"`
+}
+
+// EventOrdersQuery represents the request for GET|POST /order/event-orders.
+type EventOrdersQuery struct {
+	EventID      string `json:"event_id" form:"event_id"`
+	UserWallet   string `json:"user_wallet,omitempty" form:"user_wallet"`
+	StatusFilter string `json:"status_filter,omitempty" form:"status_filter"` // all, filled, unfilled, canceled, settled
+	Page         int    `json:"page,omitempty" form:"page"`
+	PageSize     int    `json:"page_size,omitempty" form:"page_size"`
+}
+
+// EventOrderItem represents an enriched order with price/cost/pnl info.
+type EventOrderItem struct {
+	ID              string     `json:"id"`
+	UserWallet      string     `json:"user_wallet"`
+	OrderTime       *time.Time `json:"order_time"`
+	MarketType      string     `json:"market_type"`
+	MarketID        string     `json:"market_id"`
+	MarketOutID     string     `json:"market_out_id"`
+	EventID         string     `json:"event_id"`
+	MarketSide      string     `json:"market_side"`
+	TokenID         string     `json:"token_id"`
+	TokenAmount     string     `json:"token_amount"`
+	OrderDirection  string     `json:"order_direction"`
+	OrderType       string     `json:"order_type"`
+	LimitPrice      string     `json:"limit_price"`
+	RequestedShares string     `json:"requested_shares"`
+	SharesAmount    string     `json:"shares_amount"`
+	FilledCost      string     `json:"filled_cost"`
+	FilledPrice     string     `json:"filled_price"`
+	FeesPaid        string     `json:"fees_paid"`
+	Status          string     `json:"status"`
+	CurrentPrice    string     `json:"current_price"`
+	AvgCost         string     `json:"avg_cost"`
+	CurrentValue    string     `json:"current_value"`
+	PnL             string     `json:"pnl"`
+	PnLPercent      string     `json:"pnl_percent"`
+	Source          string     `json:"source"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+}
+
+// EventOrdersResponse represents the response for GET|POST /order/event-orders.
+type EventOrdersResponse struct {
+	Total    int64            `json:"total"`
+	Page     int              `json:"page"`
+	PageSize int              `json:"page_size"`
+	Orders   []EventOrderItem `json:"orders"`
 }
 
 // AdminOrderListQuery represents the request for GET|POST /order/list (admin).
