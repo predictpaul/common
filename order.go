@@ -157,7 +157,7 @@ type EventOrdersResponse struct {
 type AdminOrderListQuery struct {
 	PageNum   int                    `json:"pageNum,omitempty" form:"pageNum"`
 	PageSize  int                    `json:"pageSize,omitempty" form:"pageSize"`
-	Search    map[string]interface{} `json:"search,omitempty" form:"search"`
+	Search    map[string]any `json:"search,omitempty" form:"search"`
 	SortField string                 `json:"sortField,omitempty" form:"sortField"`
 	SortOrder string                 `json:"sortOrder,omitempty" form:"sortOrder"` // ascend / descend
 }
@@ -187,4 +187,71 @@ type AdminOrderItem struct {
 	Status          string     `json:"status"`
 	CreatedAt       time.Time  `json:"created_at"`
 	UpdatedAt       time.Time  `json:"updated_at"`
+}
+
+// =============================================================================
+// Cancel Types
+// =============================================================================
+
+// OrderCancelRequest represents the request for POST /order/cancel.
+type OrderCancelRequest struct {
+	OrderID string `json:"order_id"`
+}
+
+// OrderCancelBatchRequest represents the request for POST /order/cancel-batch.
+type OrderCancelBatchRequest struct {
+	OrderIDs []string `json:"order_ids"`
+}
+
+// OrderCancelAllRequest represents the request for POST /order/cancel-all.
+type OrderCancelAllRequest struct {
+	UserWallet string `json:"user_wallet"`
+}
+
+// OrderCancelMarketRequest represents the request for POST /order/cancel-market.
+type OrderCancelMarketRequest struct {
+	UserWallet  string `json:"user_wallet"`
+	MarketOutID string `json:"market_out_id"`
+	TokenID     string `json:"token_id"`
+}
+
+// CancelResult represents batch cancellation result.
+type CancelResult struct {
+	SuccessIDs []string `json:"success_ids"`
+	FailedIDs  []string `json:"failed_ids"`
+}
+
+// =============================================================================
+// Order List Types
+// =============================================================================
+
+// OrderStatusFilter represents order status filter type.
+type OrderStatusFilter string
+
+const (
+	OrderFilterAll      OrderStatusFilter = "all"
+	OrderFilterFilled   OrderStatusFilter = "filled"
+	OrderFilterUnfilled OrderStatusFilter = "unfilled"
+	OrderFilterCanceled OrderStatusFilter = "canceled"
+	OrderFilterSettled  OrderStatusFilter = "settled"
+)
+
+// OrderListQuery represents query parameters for GET /order/list.
+type OrderListQuery struct {
+	UserWallet   string            `json:"user_wallet" form:"user_wallet"`
+	StatusFilter OrderStatusFilter `json:"status_filter,omitempty" form:"status_filter"`
+	MarketType   string            `json:"market_type,omitempty" form:"market_type"`
+	MarketID     string            `json:"market_id,omitempty" form:"market_id"`
+	EventID      string            `json:"event_id,omitempty" form:"event_id"`
+	TokenID      string            `json:"token_id,omitempty" form:"token_id"`
+	Page         int               `json:"page,omitempty" form:"page"`
+	PageSize     int               `json:"page_size,omitempty" form:"page_size"`
+}
+
+// OrderListResponse represents the response for GET /order/list.
+type OrderListResponse struct {
+	Total    int64 `json:"total"`
+	Page     int   `json:"page"`
+	PageSize int   `json:"page_size"`
+	Orders   []any `json:"orders"`
 }
