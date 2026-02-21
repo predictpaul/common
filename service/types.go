@@ -399,19 +399,3 @@ type FlowListResponse struct {
 	Flows    []any  `json:"flows"`
 }
 
-// CostInfo represents cost information
-type CostInfo struct {
-	TotalCost   decimal.Decimal
-	TotalShares decimal.Decimal
-	AvgCost     decimal.Decimal
-}
-
-// TransactionDetail represents transaction details
-type TransactionDetail struct {
-	Hash        string
-	From        string
-	To          string
-	BlockNumber uint64
-	GasUsed     uint64
-	Status      uint64
-}

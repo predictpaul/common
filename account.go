@@ -50,6 +50,18 @@ type BalanceResponse struct {
 	TokenPositions []TokenPosition `json:"token_positions"`
 }
 
+// MarketFilter represents a market filter for positions and orders queries.
+type MarketFilter struct {
+	ID     string `json:"id"`
+	Source string `json:"source"`
+}
+
+// PositionQuery represents query parameters for GET /account/positions.
+type PositionQuery struct {
+	UserWallet string         `json:"user_wallet" form:"user_wallet"`
+	Markets    []MarketFilter `json:"markets,omitempty"`
+}
+
 // PositionItem represents a single position with PnL info.
 type PositionItem struct {
 	TokenID              string `json:"token_id"`
@@ -82,6 +94,12 @@ type PositionResponse struct {
 	Positions       []PositionItem `json:"positions"`
 }
 
+// PortfolioQuery represents query parameters for GET /account/portfolio.
+type PortfolioQuery struct {
+	UserWallet string         `json:"user_wallet" form:"user_wallet"`
+	Markets    []MarketFilter `json:"markets,omitempty"`
+}
+
 // PortfolioResponse represents the response for GET /account/portfolio.
 type PortfolioResponse struct {
 	TotalPortfolioValue string `json:"total_portfolio_value"`
@@ -102,71 +120,4 @@ type EventPnLResponse struct {
 	UnrealizedPnL string         `json:"unrealized_pnl"`
 	PnLPercent    string         `json:"pnl_percent"`
 	Positions     []PositionItem `json:"positions"`
-}
-
-// =============================================================================
-// Query Types
-// =============================================================================
-
-// BalanceQuery represents query parameters for GET /account/balance.
-type BalanceQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-}
-
-// MarketFilter represents a market filter for positions and orders queries.
-type MarketFilter struct {
-	ID     string `json:"id"`
-	Source string `json:"source"`
-}
-
-// PositionQuery represents query parameters for GET /account/positions.
-type PositionQuery struct {
-	UserWallet string         `json:"user_wallet" form:"user_wallet"`
-	Markets    []MarketFilter `json:"markets,omitempty"`
-}
-
-// PortfolioQuery represents query parameters for GET /account/portfolio.
-type PortfolioQuery struct {
-	UserWallet string         `json:"user_wallet" form:"user_wallet"`
-	Markets    []MarketFilter `json:"markets,omitempty"`
-}
-
-// EventPnLQuery represents query parameters for GET /account/event-pnl.
-type EventPnLQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-	EventID    string `json:"event_id" form:"event_id"`
-}
-
-// AccountListQuery represents query parameters for GET /account/list.
-type AccountListQuery struct {
-	UserWallet  string `json:"user_wallet" form:"user_wallet"`
-	AccountType string `json:"type" form:"type"`
-	IsSettle    *bool  `json:"is_settle,omitempty" form:"is_settle"`
-	Page        int    `json:"page,omitempty" form:"page"`
-	PageSize    int    `json:"page_size,omitempty" form:"page_size"`
-}
-
-// AccountListResponse represents the response for GET /account/list.
-type AccountListResponse struct {
-	Total    int64 `json:"total"`
-	Page     int   `json:"page"`
-	PageSize int   `json:"page_size"`
-	Accounts []any `json:"accounts"`
-}
-
-// FlowListQuery represents query parameters for GET /account/flows.
-type FlowListQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-	Type       string `json:"type" form:"type"`
-	Direction  string `json:"direction" form:"direction"`
-	Page       int    `json:"page,omitempty" form:"page"`
-	PageSize   int    `json:"page_size,omitempty" form:"page_size"`
-}
-
-// FlowListResponse represents the response for GET /account/flows.
-type FlowListResponse struct {
-	Total    int64 `json:"total"`
-	Page     int   `json:"page"`
-	PageSize int   `json:"page_size"`
-	Flows    []any `json:"flows"`
 }

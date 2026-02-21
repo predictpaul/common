@@ -21,97 +21,65 @@ type OrderCreateRequest struct {
 
 // OrderCreateResponse represents the response for POST /order/create.
 type OrderCreateResponse struct {
-	ID              string     `json:"id"`
-	UserWallet      string     `json:"user_wallet"`
-	MarketType      string     `json:"market_type"`
-	MarketID        string     `json:"market_id"`
-	TokenID         string     `json:"token_id"`
-	EventID         string     `json:"event_id,omitempty"`
-	MarketSide      string     `json:"market_side"`
-	OrderDirection  string     `json:"order_direction"`
-	OrderType       string     `json:"order_type"`
-	TokenAmount     string     `json:"token_amount"`
-	SharesAmount    string     `json:"shares_amount"`
-	FilledCost      string     `json:"filled_cost"`
-	FilledPrice     string     `json:"filled_price"`
-	FeesPaid        string     `json:"fees_paid"`
-	Status          string     `json:"status"`
-	CreatedAt       time.Time  `json:"created_at"`
-	UpdatedAt       time.Time  `json:"updated_at,omitempty"`
+	ID              string    `json:"id"`
+	UserWallet      string    `json:"user_wallet"`
+	MarketType      string    `json:"market_type"`
+	MarketID        string    `json:"market_id"`
+	TokenID         string    `json:"token_id"`
+	EventID         string    `json:"event_id,omitempty"`
+	MarketSide      string    `json:"market_side"`
+	OrderDirection  string    `json:"order_direction"`
+	OrderType       string    `json:"order_type"`
+	TokenAmount     string    `json:"token_amount"`
+	SharesAmount    string    `json:"shares_amount"`
+	FilledCost      string    `json:"filled_cost"`
+	FilledPrice     string    `json:"filled_price"`
+	FeesPaid        string    `json:"fees_paid"`
+	Status          string    `json:"status"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at,omitempty"`
 }
 
-// OpenOrderQuery represents the request for GET|POST /order/open.
-type OpenOrderQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-	EventID    string `json:"event_id,omitempty" form:"event_id"`
-	Page       int    `json:"page,omitempty" form:"page"`
-	PageSize   int    `json:"page_size,omitempty" form:"page_size"`
+// OrderCancelAllRequest represents the request for POST /order/cancel-all.
+type OrderCancelAllRequest struct {
+	UserWallet string `json:"user_wallet"`
 }
 
-// OpenOrderItem represents a single open order.
-type OpenOrderItem struct {
-	OrderID   string     `json:"order_id"`
-	EventID   string     `json:"event_id"`
-	TokenID   string     `json:"token_id"`
-	MarketID  string     `json:"market_id"`
-	Side      string     `json:"side"`      // YES / NO
-	Type      string     `json:"type"`      // BUY / SELL
-	Price     string     `json:"price"`
-	Filled    string     `json:"filled"`
-	Total     string     `json:"total"`
-	Status    string     `json:"status"`
-	Source    string     `json:"source"`    // POLYMARKET / KALSHI
-	OrderTime *time.Time `json:"order_time"`
+// CancelResult represents batch cancellation result.
+type CancelResult struct {
+	SuccessIDs []string `json:"success_ids"`
+	FailedIDs  []string `json:"failed_ids"`
 }
 
-// OpenOrderResponse represents the response for GET|POST /order/open.
-type OpenOrderResponse struct {
-	Total    int64           `json:"total"`
-	Page     int             `json:"page"`
-	PageSize int             `json:"page_size"`
-	Orders   []OpenOrderItem `json:"orders"`
+// OrderStatusFilter represents order status filter type.
+type OrderStatusFilter string
+
+const (
+	OrderFilterAll      OrderStatusFilter = "all"
+	OrderFilterFilled   OrderStatusFilter = "filled"
+	OrderFilterUnfilled OrderStatusFilter = "unfilled"
+	OrderFilterCanceled OrderStatusFilter = "canceled"
+	OrderFilterSettled  OrderStatusFilter = "settled"
+)
+
+// OrderListQuery represents query parameters for GET /order/list.
+type OrderListQuery struct {
+	UserWallet   string            `json:"user_wallet" form:"user_wallet"`
+	StatusFilter OrderStatusFilter `json:"status_filter,omitempty" form:"status_filter"`
+	MarketType   string            `json:"market_type,omitempty" form:"market_type"`
+	MarketID     string            `json:"market_id,omitempty" form:"market_id"`
+	EventID      string            `json:"event_id,omitempty" form:"event_id"`
+	TokenID      string            `json:"token_id,omitempty" form:"token_id"`
+	Page         int               `json:"page,omitempty" form:"page"`
+	PageSize     int               `json:"page_size,omitempty" form:"page_size"`
 }
 
-// OrderHistoryQuery represents the request for GET|POST /order/history.
-type OrderHistoryQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-	EventID    string `json:"event_id,omitempty" form:"event_id"`
-	Page       int    `json:"page,omitempty" form:"page"`
-	PageSize   int    `json:"page_size,omitempty" form:"page_size"`
-}
-
-// OrderHistoryItem represents a single order in history.
-type OrderHistoryItem struct {
-	OrderID   string `json:"order_id"`
-	CreatedAt string `json:"created_at"`
-	Type      string `json:"type"`       // BUY / SELL
-	OrderType string `json:"order_type"` // MARKET / LIMIT / STOP
-	Source    string `json:"source"`     // POLYMARKET / KALSHI
-	EventID   string `json:"event_id"`
-	Side      string `json:"side"`       // YES / NO
-	Price     string `json:"price"`
-	Shares    string `json:"shares"`
-	Filled    string `json:"filled"`
-	Cost      string `json:"cost"`
-	Change    string `json:"change"`
-	Status    string `json:"status"`
-}
-
-// OrderHistoryResponse represents the response for GET|POST /order/history.
-type OrderHistoryResponse struct {
-	Total    int64              `json:"total"`
-	Page     int                `json:"page"`
-	PageSize int                `json:"page_size"`
-	Orders   []OrderHistoryItem `json:"orders"`
-}
-
-// EventOrdersQuery represents the request for GET|POST /order/event-orders.
-type EventOrdersQuery struct {
-	EventID      string `json:"event_id" form:"event_id"`
-	UserWallet   string `json:"user_wallet,omitempty" form:"user_wallet"`
-	StatusFilter string `json:"status_filter,omitempty" form:"status_filter"` // all, filled, unfilled, canceled, settled
-	Page         int    `json:"page,omitempty" form:"page"`
-	PageSize     int    `json:"page_size,omitempty" form:"page_size"`
+// OrderListResponse represents the response for GET /order/list.
+type OrderListResponse struct {
+	Total    int64 `json:"total"`
+	Page     int   `json:"page"`
+	PageSize int   `json:"page_size"`
+	Orders   []any `json:"orders"`
 }
 
 // EventOrderItem represents an enriched order with price/cost/pnl info.
@@ -151,107 +119,4 @@ type EventOrdersResponse struct {
 	Page     int              `json:"page"`
 	PageSize int              `json:"page_size"`
 	Orders   []EventOrderItem `json:"orders"`
-}
-
-// AdminOrderListQuery represents the request for GET|POST /order/list (admin).
-type AdminOrderListQuery struct {
-	PageNum   int                    `json:"pageNum,omitempty" form:"pageNum"`
-	PageSize  int                    `json:"pageSize,omitempty" form:"pageSize"`
-	Search    map[string]any `json:"search,omitempty" form:"search"`
-	SortField string                 `json:"sortField,omitempty" form:"sortField"`
-	SortOrder string                 `json:"sortOrder,omitempty" form:"sortOrder"` // ascend / descend
-}
-
-// AdminOrderItem represents an order item in admin list.
-type AdminOrderItem struct {
-	ID              string     `json:"id"`
-	UserWallet      string     `json:"user_wallet"`
-	OrderTime       *time.Time `json:"order_time"`
-	MarketType      string     `json:"market_type"`
-	MarketID        string     `json:"market_id"`
-	MarketOutID     string     `json:"market_out_id"`
-	EventID         string     `json:"event_id"`
-	MarketSide      string     `json:"market_side"`
-	TokenID         string     `json:"token_id"`
-	TokenAmount     string     `json:"token_amount"`
-	OrderDirection  string     `json:"order_direction"`
-	OrderType       string     `json:"order_type"`
-	LimitPrice      string     `json:"limit_price"`
-	RequestedShares string     `json:"requested_shares"`
-	SharesAmount    string     `json:"shares_amount"`
-	StopPrice       string     `json:"stop_price"`
-	TakeProfitPrice string     `json:"take_profit_price"`
-	FilledCost      string     `json:"filled_cost"`
-	FilledPrice     string     `json:"filled_price"`
-	FeesPaid        string     `json:"fees_paid"`
-	Status          string     `json:"status"`
-	CreatedAt       time.Time  `json:"created_at"`
-	UpdatedAt       time.Time  `json:"updated_at"`
-}
-
-// =============================================================================
-// Cancel Types
-// =============================================================================
-
-// OrderCancelRequest represents the request for POST /order/cancel.
-type OrderCancelRequest struct {
-	OrderID string `json:"order_id"`
-}
-
-// OrderCancelBatchRequest represents the request for POST /order/cancel-batch.
-type OrderCancelBatchRequest struct {
-	OrderIDs []string `json:"order_ids"`
-}
-
-// OrderCancelAllRequest represents the request for POST /order/cancel-all.
-type OrderCancelAllRequest struct {
-	UserWallet string `json:"user_wallet"`
-}
-
-// OrderCancelMarketRequest represents the request for POST /order/cancel-market.
-type OrderCancelMarketRequest struct {
-	UserWallet  string `json:"user_wallet"`
-	MarketOutID string `json:"market_out_id"`
-	TokenID     string `json:"token_id"`
-}
-
-// CancelResult represents batch cancellation result.
-type CancelResult struct {
-	SuccessIDs []string `json:"success_ids"`
-	FailedIDs  []string `json:"failed_ids"`
-}
-
-// =============================================================================
-// Order List Types
-// =============================================================================
-
-// OrderStatusFilter represents order status filter type.
-type OrderStatusFilter string
-
-const (
-	OrderFilterAll      OrderStatusFilter = "all"
-	OrderFilterFilled   OrderStatusFilter = "filled"
-	OrderFilterUnfilled OrderStatusFilter = "unfilled"
-	OrderFilterCanceled OrderStatusFilter = "canceled"
-	OrderFilterSettled  OrderStatusFilter = "settled"
-)
-
-// OrderListQuery represents query parameters for GET /order/list.
-type OrderListQuery struct {
-	UserWallet   string            `json:"user_wallet" form:"user_wallet"`
-	StatusFilter OrderStatusFilter `json:"status_filter,omitempty" form:"status_filter"`
-	MarketType   string            `json:"market_type,omitempty" form:"market_type"`
-	MarketID     string            `json:"market_id,omitempty" form:"market_id"`
-	EventID      string            `json:"event_id,omitempty" form:"event_id"`
-	TokenID      string            `json:"token_id,omitempty" form:"token_id"`
-	Page         int               `json:"page,omitempty" form:"page"`
-	PageSize     int               `json:"page_size,omitempty" form:"page_size"`
-}
-
-// OrderListResponse represents the response for GET /order/list.
-type OrderListResponse struct {
-	Total    int64 `json:"total"`
-	Page     int   `json:"page"`
-	PageSize int   `json:"page_size"`
-	Orders   []any `json:"orders"`
 }
