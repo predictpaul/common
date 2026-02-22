@@ -109,6 +109,8 @@ var marketConfig admin.MarketConfig
 
 ### Common (github.com/predictpaul/common)
 
+#### Response
+
 | Type | Description |
 |------|-------------|
 | `Response[T]` | Unified API response wrapper |
@@ -116,6 +118,85 @@ var marketConfig admin.MarketConfig
 | `CodeSuccess` | Success code (0) |
 | `CodeFailed` | Failed code (101) |
 | `CodeUnauthorized` | Unauthorized code (102) |
+
+#### Order Types (order.go)
+
+| Type | Description |
+|------|-------------|
+| `OrderCreateRequest` | Request for POST /order/create |
+| `OrderCreateResponse` | Response for POST /order/create |
+| `OrderCancelAllRequest` | Request for POST /order/cancel-all |
+| `CancelResult` | Batch cancellation result (success_ids, failed_ids) |
+| `OrderStatusFilter` | Order status filter: all, filled, unfilled, canceled, settled |
+| `OrderListQuery` | Query parameters for GET /order/list |
+| `OrderItem` | Order item in list response (mirrors model.Order) |
+| `OrderListResponse` | Paginated response for GET /order/list (`[]OrderItem`) |
+| `EventOrderItem` | Enriched order with current_price/avg_cost/pnl info |
+| `EventOrdersResponse` | Paginated response for event orders (`[]EventOrderItem`) |
+
+#### Account Types (account.go)
+
+| Type | Description |
+|------|-------------|
+| `RechargeRequest` | Request for POST /account/deposit |
+| `WithdrawRequest` | Request for POST /account/withdraw |
+| `SettleRequest` | Request for POST /account/settle |
+| `SettleResult` | Settlement result for a single token |
+| `BalanceResponse` | Balance summary with USDC + token positions |
+| `TokenPosition` | Token position in balance response |
+| `MarketFilter` | Market filter (id + source) for positions/portfolio queries |
+| `PositionQuery` | Query parameters for GET /account/positions |
+| `PositionItem` | Position with unrealized PnL, market status, shares |
+| `PositionResponse` | Paginated response for GET /account/positions |
+| `PortfolioQuery` | Query parameters for GET /account/portfolio |
+| `PortfolioResponse` | Portfolio overview (total value, USDC, positions value, PnL) |
+| `EventPnLResponse` | Event-level PnL summary with positions |
+
+### Service Layer Types (github.com/predictpaul/common/service)
+
+Decimal-based types for Go service consumers. Same structure as root package but uses `decimal.Decimal` for numeric fields instead of `string`.
+
+| Type | Description |
+|------|-------------|
+| `OrderCreateRequest` | Order creation with decimal amounts |
+| `OrderCancelRequest` | Single order cancellation |
+| `OrderCancelBatchRequest` | Batch order cancellation |
+| `OrderCancelAllRequest` | Cancel all orders for a user |
+| `OrderCancelMarketRequest` | Cancel orders by market |
+| `CancelResult` | Batch cancellation result |
+| `OrderStatusFilter` | Status filter constants |
+| `OrderListQuery` | Order list query with MarketFilter support |
+| `OrderItem` | Order item with decimal fields |
+| `OrderListResponse` | Paginated order list (`[]OrderItem`) |
+| `EventOrdersQuery` | Event orders query |
+| `EventOrderItem` | Enriched order with decimal price/cost/pnl |
+| `EventOrdersResponse` | Paginated event orders |
+| `OpenOrderQuery` | Open orders query |
+| `OpenOrderItem` | Open order with decimal price/filled/total |
+| `OpenOrderResponse` | Paginated open orders |
+| `OrderHistoryQuery` | Order history query |
+| `OrderHistoryItem` | History item with decimal price/shares/cost |
+| `OrderHistoryResponse` | Paginated order history |
+| `RechargeRequest` | Deposit with decimal amount |
+| `WithdrawRequest` | Withdraw with decimal amount |
+| `SettleRequest` | Settlement request |
+| `BalanceQuery` | Balance query |
+| `BalanceSummary` | Balance with decimal USDC + TotalValue |
+| `TokenPosition` | Token position with decimal balance/price/value |
+| `AccountListQuery` | Account list query |
+| `AccountListResponse` | Paginated account list |
+| `FlowListQuery` | Flow list query |
+| `FlowListResponse` | Paginated flow list |
+| `MarketFilter` | Market filter (id + source) |
+| `PositionQuery` | Position query with MarketFilter |
+| `PositionItem` | Position with decimal PnL fields |
+| `PositionResponse` | Paginated positions |
+| `PortfolioQuery` | Portfolio query with MarketFilter |
+| `PortfolioResponse` | Portfolio overview with decimal values |
+| `EventPnLQuery` | Event PnL query |
+| `EventPnLResponse` | Event PnL with decimal values |
+| `SettleResult` | Settlement result |
+| `UnifiedMarketStatus` | Market status: open, closed, settled |
 
 ### Polymarket Platform Types (github.com/predictpaul/common/polymarket)
 

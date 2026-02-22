@@ -375,12 +375,42 @@ type OrderHistoryResponse struct {
 	Orders   []OrderHistoryItem `json:"orders"`
 }
 
+// OrderItem represents an order in list responses.
+// Mirrors model.Order fields with decimal types.
+type OrderItem struct {
+	ID              string          `json:"id"`
+	UserWallet      string          `json:"user_wallet"`
+	OrderTime       *time.Time      `json:"order_time"`
+	MarketType      string          `json:"market_type"`
+	MarketAccountID string          `json:"market_account_id"`
+	MarketID        string          `json:"market_id"`
+	MarketOutID     string          `json:"market_out_id"`
+	EventID         string          `json:"event_id"`
+	MarketSide      string          `json:"market_side"`
+	MarketOrderID   string          `json:"market_order_id"`
+	TokenID         string          `json:"token_id"`
+	TokenAmount     decimal.Decimal `json:"token_amount"`
+	OrderDirection  string          `json:"order_direction"`
+	OrderType       string          `json:"order_type"`
+	LimitPrice      decimal.Decimal `json:"limit_price"`
+	RequestedShares decimal.Decimal `json:"requested_shares"`
+	SharesAmount    decimal.Decimal `json:"shares_amount"`
+	StopPrice       decimal.Decimal `json:"stop_price"`
+	TakeProfitPrice decimal.Decimal `json:"take_profit_price"`
+	FilledCost      decimal.Decimal `json:"filled_cost"`
+	FilledPrice     decimal.Decimal `json:"filled_price"`
+	FeesPaid        decimal.Decimal `json:"fees_paid"`
+	Status          string          `json:"status"`
+	CreatedAt       time.Time       `json:"created_at"`
+	UpdatedAt       time.Time       `json:"updated_at"`
+}
+
 // OrderListResponse represents order list response
 type OrderListResponse struct {
-	Total    int64  `json:"total"`
-	Page     int    `json:"page"`
-	PageSize int    `json:"page_size"`
-	Orders   []any  `json:"orders"`
+	Total    int64       `json:"total"`
+	Page     int         `json:"page"`
+	PageSize int         `json:"page_size"`
+	Orders   []OrderItem `json:"orders"`
 }
 
 // AccountListResponse represents account list response

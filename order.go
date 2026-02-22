@@ -19,26 +19,9 @@ type OrderCreateRequest struct {
 	TakeProfitPrice string `json:"take_profit_price,omitempty"`
 }
 
-// OrderCreateResponse represents the response for POST /order/create.
-type OrderCreateResponse struct {
-	ID              string    `json:"id"`
-	UserWallet      string    `json:"user_wallet"`
-	MarketType      string    `json:"market_type"`
-	MarketID        string    `json:"market_id"`
-	TokenID         string    `json:"token_id"`
-	EventID         string    `json:"event_id,omitempty"`
-	MarketSide      string    `json:"market_side"`
-	OrderDirection  string    `json:"order_direction"`
-	OrderType       string    `json:"order_type"`
-	TokenAmount     string    `json:"token_amount"`
-	SharesAmount    string    `json:"shares_amount"`
-	FilledCost      string    `json:"filled_cost"`
-	FilledPrice     string    `json:"filled_price"`
-	FeesPaid        string    `json:"fees_paid"`
-	Status          string    `json:"status"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at,omitempty"`
-}
+// OrderCreateResponse is the response for POST /order/create.
+// Same as OrderItem — both endpoints return model.Order.
+type OrderCreateResponse = OrderItem
 
 // OrderCancelAllRequest represents the request for POST /order/cancel-all.
 type OrderCancelAllRequest struct {
@@ -74,12 +57,42 @@ type OrderListQuery struct {
 	PageSize     int               `json:"page_size,omitempty" form:"page_size"`
 }
 
+// OrderItem represents an order returned by GET /order/list.
+// Mirrors model.Order JSON serialization.
+type OrderItem struct {
+	ID              string     `json:"id"`
+	UserWallet      string     `json:"user_wallet"`
+	OrderTime       *time.Time `json:"order_time"`
+	MarketType      string     `json:"market_type"`
+	MarketAccountID string     `json:"market_account_id"`
+	MarketID        string     `json:"market_id"`
+	MarketOutID     string     `json:"market_out_id"`
+	EventID         string     `json:"event_id"`
+	MarketSide      string     `json:"market_side"`
+	MarketOrderID   string     `json:"market_order_id"`
+	TokenID         string     `json:"token_id"`
+	TokenAmount     string     `json:"token_amount"`
+	OrderDirection  string     `json:"order_direction"`
+	OrderType       string     `json:"order_type"`
+	LimitPrice      string     `json:"limit_price"`
+	RequestedShares string     `json:"requested_shares"`
+	SharesAmount    string     `json:"shares_amount"`
+	StopPrice       string     `json:"stop_price"`
+	TakeProfitPrice string     `json:"take_profit_price"`
+	FilledCost      string     `json:"filled_cost"`
+	FilledPrice     string     `json:"filled_price"`
+	FeesPaid        string     `json:"fees_paid"`
+	Status          string     `json:"status"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+}
+
 // OrderListResponse represents the response for GET /order/list.
 type OrderListResponse struct {
-	Total    int64 `json:"total"`
-	Page     int   `json:"page"`
-	PageSize int   `json:"page_size"`
-	Orders   []any `json:"orders"`
+	Total    int64       `json:"total"`
+	Page     int         `json:"page"`
+	PageSize int         `json:"page_size"`
+	Orders   []OrderItem `json:"orders"`
 }
 
 // EventOrderItem represents an enriched order with price/cost/pnl info.
