@@ -59,6 +59,8 @@ type MarketFilter struct {
 // PositionQuery represents query parameters for GET /account/positions.
 type PositionQuery struct {
 	UserWallet string         `json:"user_wallet" form:"user_wallet"`
+	Page       int            `json:"page,omitempty" form:"page"`
+	PageSize   int            `json:"page_size,omitempty" form:"page_size"`
 	Markets    []MarketFilter `json:"markets,omitempty"`
 }
 
@@ -91,6 +93,9 @@ type PositionResponse struct {
 	TotalPnL        string         `json:"total_pnl"`
 	TotalPnLPercent string         `json:"total_pnl_percent"`
 	PositionCount   int            `json:"position_count"`
+	Total           int64          `json:"total"`
+	Page            int            `json:"page"`
+	PageSize        int            `json:"page_size"`
 	Positions       []PositionItem `json:"positions"`
 }
 
