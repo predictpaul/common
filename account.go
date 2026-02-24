@@ -1,5 +1,7 @@
 package common
 
+import "github.com/shopspring/decimal"
+
 // RechargeRequest represents the request for POST /account/recharge.
 type RechargeRequest struct {
 	UserWallet    string `json:"user_wallet"`
@@ -32,20 +34,20 @@ type SettleResult struct {
 
 // TokenPosition represents a token position in balance response.
 type TokenPosition struct {
-	TokenID      string `json:"token_id"`
-	MarketID     string `json:"market_id"`
-	MarketType   string `json:"market_type"`
-	MarketSide   string `json:"market_side"`
-	Balance      string `json:"balance"`
-	CurrentPrice string `json:"current_price"`
-	CurrentValue string `json:"current_value"`
-	IsSettle     bool   `json:"is_settle"`
+	TokenID      string          `json:"token_id"`
+	MarketID     string          `json:"market_id"`
+	MarketType   string          `json:"market_type"`
+	MarketSide   string          `json:"market_side"`
+	Balance      decimal.Decimal `json:"balance"`
+	CurrentPrice decimal.Decimal `json:"current_price"`
+	CurrentValue decimal.Decimal `json:"current_value"`
+	IsSettle     bool            `json:"is_settle"`
 }
 
 // BalanceResponse represents the response for GET /account/balance.
 type BalanceResponse struct {
-	USDC           string          `json:"usdc"`
-	TotalValue     string          `json:"total_value"`
+	USDC           decimal.Decimal `json:"usdc"`
+	TotalValue     decimal.Decimal `json:"total_value"`
 	TotalTokens    int             `json:"total_tokens"`
 	TokenPositions []TokenPosition `json:"token_positions"`
 }

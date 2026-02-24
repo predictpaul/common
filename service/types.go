@@ -204,8 +204,8 @@ type SettleResult struct {
 	Message string `json:"message"`
 }
 
-// BalanceSummary represents user balance summary
-type BalanceSummary struct {
+// BalanceResponse represents user balance response
+type BalanceResponse struct {
 	USDC           decimal.Decimal `json:"usdc"`
 	TotalValue     decimal.Decimal `json:"total_value"`
 	TotalTokens    int             `json:"total_tokens"`
