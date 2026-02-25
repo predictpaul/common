@@ -92,6 +92,7 @@ type PositionItem struct {
 type PositionResponse struct {
 	TotalValue      string         `json:"total_value"`
 	TotalCost       string         `json:"total_cost"`
+	TotalShares     string         `json:"total_shares"`
 	TotalPnL        string         `json:"total_pnl"`
 	TotalPnLPercent string         `json:"total_pnl_percent"`
 	PositionCount   int            `json:"position_count"`
@@ -109,13 +110,14 @@ type PortfolioQuery struct {
 
 // PortfolioResponse represents the response for GET /account/portfolio.
 type PortfolioResponse struct {
-	TotalPortfolioValue string `json:"total_portfolio_value"`
-	USDCBalance         string `json:"usdc_balance"`
-	PositionsValue      string `json:"positions_value"`
-	TotalCost           string `json:"total_cost"`
-	TotalPnL            string `json:"total_pnl"`
-	TotalPnLPercent     string `json:"total_pnl_percent"`
-	PositionCount       int    `json:"position_count"`
+	TotalPortfolioValue  string `json:"total_portfolio_value"`
+	USDCBalance          string `json:"usdc_balance"`
+	PositionsValue       string `json:"positions_value"`
+	TotalCost            string `json:"total_cost"`
+	UnrealizedPnL        string `json:"unrealized_pnl"`
+	UnrealizedPnLPercent string `json:"unrealized_pnl_percent"`
+	MaxPotential         string `json:"max_potential"`
+	PositionCount        int    `json:"position_count"`
 }
 
 // EventPnLResponse represents the response for GET /account/event-pnl.

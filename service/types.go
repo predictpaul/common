@@ -259,6 +259,7 @@ type PositionItem struct {
 type PositionResponse struct {
 	TotalValue      decimal.Decimal `json:"total_value"`
 	TotalCost       decimal.Decimal `json:"total_cost"`
+	TotalShares     decimal.Decimal `json:"total_shares"`
 	TotalPnL        decimal.Decimal `json:"total_pnl"`
 	TotalPnLPercent decimal.Decimal `json:"total_pnl_percent"`
 	PositionCount   int             `json:"position_count"`
@@ -270,13 +271,14 @@ type PositionResponse struct {
 
 // PortfolioResponse represents portfolio overview response
 type PortfolioResponse struct {
-	TotalPortfolioValue decimal.Decimal `json:"total_portfolio_value"`
-	USDCBalance         decimal.Decimal `json:"usdc_balance"`
-	PositionsValue      decimal.Decimal `json:"positions_value"`
-	TotalCost           decimal.Decimal `json:"total_cost"`
-	TotalPnL            decimal.Decimal `json:"total_pnl"`
-	TotalPnLPercent     decimal.Decimal `json:"total_pnl_percent"`
-	PositionCount       int             `json:"position_count"`
+	TotalPortfolioValue  decimal.Decimal `json:"total_portfolio_value"`
+	USDCBalance          decimal.Decimal `json:"usdc_balance"`
+	PositionsValue       decimal.Decimal `json:"positions_value"`
+	TotalCost            decimal.Decimal `json:"total_cost"`
+	UnrealizedPnL        decimal.Decimal `json:"unrealized_pnl"`
+	UnrealizedPnLPercent decimal.Decimal `json:"unrealized_pnl_percent"`
+	MaxPotential         decimal.Decimal `json:"max_potential"`
+	PositionCount        int             `json:"position_count"`
 }
 
 // EventPnLResponse represents event PnL response
