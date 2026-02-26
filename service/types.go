@@ -176,6 +176,7 @@ type MarketFilter struct {
 // PositionQuery represents position query parameters
 type PositionQuery struct {
 	UserWallet string         `json:"user_wallet" form:"user_wallet" validate:"required"`
+	IsSettle   *bool          `json:"is_settle" form:"is_settle"`
 	Page       int            `json:"page" form:"page"`
 	PageSize   int            `json:"page_size" form:"page_size"`
 	Markets    []MarketFilter `json:"-" form:"-"`
@@ -257,16 +258,23 @@ type PositionItem struct {
 
 // PositionResponse represents position response
 type PositionResponse struct {
-	TotalValue      decimal.Decimal `json:"total_value"`
-	TotalCost       decimal.Decimal `json:"total_cost"`
-	TotalShares     decimal.Decimal `json:"total_shares"`
-	TotalPnL        decimal.Decimal `json:"total_pnl"`
-	TotalPnLPercent decimal.Decimal `json:"total_pnl_percent"`
-	PositionCount   int             `json:"position_count"`
-	Total           int64           `json:"total"`
-	Page            int             `json:"page"`
-	PageSize        int             `json:"page_size"`
-	Positions       []PositionItem  `json:"positions"`
+	Total     int64          `json:"total"`
+	Page      int            `json:"page"`
+	PageSize  int            `json:"page_size"`
+	Positions []PositionItem `json:"positions"`
+}
+
+// RewardsQuery represents rewards query parameters
+type RewardsQuery struct {
+	UserWallet string         `json:"user_wallet" form:"user_wallet" validate:"required"`
+	Markets    []MarketFilter `json:"-" form:"-"`
+}
+
+// RewardsResponse represents rewards (settleable PnL) response
+type RewardsResponse struct {
+	TotalRewards decimal.Decimal `json:"total_rewards"`
+	RewardCount  int             `json:"reward_count"`
+	Positions    []PositionItem  `json:"positions"`
 }
 
 // PortfolioResponse represents portfolio overview response
