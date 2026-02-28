@@ -31,6 +31,16 @@ type OrderCreateRequest struct {
 	TakeProfitPrice decimal.Decimal `json:"take_profit_price"`
 }
 
+// BatchOrderCreateRequest represents a batch order creation request.
+// Common fields (user_wallet, market_side, order_direction) are top-level;
+// per-order fields are in the list array and inherit common fields if not set.
+type BatchOrderCreateRequest struct {
+	UserWallet     string               `json:"user_wallet"`
+	MarketSide     string               `json:"market_side"`
+	OrderDirection string               `json:"order_direction"`
+	List           []OrderCreateRequest `json:"list"`
+}
+
 // OrderCancelRequest represents an order cancellation request
 type OrderCancelRequest struct {
 	OrderID string `json:"order_id" validate:"required"`
@@ -274,7 +284,6 @@ type RewardsQuery struct {
 type RewardsResponse struct {
 	TotalRewards decimal.Decimal `json:"total_rewards"`
 	RewardCount  int             `json:"reward_count"`
-	Positions    []PositionItem  `json:"positions"`
 }
 
 // PortfolioResponse represents portfolio overview response
@@ -405,6 +414,7 @@ type OrderItem struct {
 	MarketOrderID   string          `json:"market_order_id"`
 	TokenID         string          `json:"token_id"`
 	TokenAmount     decimal.Decimal `json:"token_amount"`
+	RequestedAmount decimal.Decimal `json:"requested_amount"`
 	OrderDirection  string          `json:"order_direction"`
 	OrderType       string          `json:"order_type"`
 	LimitPrice      decimal.Decimal `json:"limit_price"`
@@ -430,17 +440,16 @@ type OrderListResponse struct {
 
 // AccountListResponse represents account list response
 type AccountListResponse struct {
-	Total    int64  `json:"total"`
-	Page     int    `json:"page"`
-	PageSize int    `json:"page_size"`
-	Accounts []any  `json:"accounts"`
+	Total    int64 `json:"total"`
+	Page     int   `json:"page"`
+	PageSize int   `json:"page_size"`
+	Accounts []any `json:"accounts"`
 }
 
 // FlowListResponse represents flow list response
 type FlowListResponse struct {
-	Total    int64  `json:"total"`
-	Page     int    `json:"page"`
-	PageSize int    `json:"page_size"`
-	Flows    []any  `json:"flows"`
+	Total    int64 `json:"total"`
+	Page     int   `json:"page"`
+	PageSize int   `json:"page_size"`
+	Flows    []any `json:"flows"`
 }
-

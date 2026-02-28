@@ -99,9 +99,8 @@ type PositionResponse struct {
 
 // RewardsResponse represents the response for GET /account/rewards.
 type RewardsResponse struct {
-	TotalRewards string         `json:"total_rewards"`
-	RewardCount  int            `json:"reward_count"`
-	Positions    []PositionItem `json:"positions"`
+	TotalRewards string `json:"total_rewards"`
+	RewardCount  int    `json:"reward_count"`
 }
 
 // PortfolioQuery represents query parameters for GET /account/portfolio.
