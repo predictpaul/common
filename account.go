@@ -38,28 +38,33 @@ type SettleResult struct {
 
 // ---- Balance ----
 
+// BalanceMarketFilter represents a market filter for balance queries.
+// Type uses short names: poly / kalshi / opinion.
+type BalanceMarketFilter struct {
+	Type string `json:"type"` // poly / kalshi / opinion
+	ID   string `json:"id"`   // market_id
+}
+
 // BalanceQuery represents query parameters for GET /account/balance.
 type BalanceQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
+	UserWallet string               `json:"user_wallet" form:"user_wallet"`
+	Side       string               `json:"side,omitempty" form:"side"`       // YES / NO
+	Markets    []BalanceMarketFilter `json:"markets,omitempty"`
 }
 
 // TokenPosition represents a token position in balance response.
 type TokenPosition struct {
-	TokenID      string          `json:"token_id"`
-	MarketID     string          `json:"market_id"`
-	MarketType   string          `json:"market_type"`
-	MarketSide   string          `json:"market_side"`
-	Balance      decimal.Decimal `json:"balance"`
-	CurrentPrice decimal.Decimal `json:"current_price"`
-	CurrentValue decimal.Decimal `json:"current_value"`
-	IsSettle     bool            `json:"is_settle"`
+	TokenID    string `json:"token_id"`
+	MarketID   string `json:"market_id"`
+	MarketType string `json:"market_type"`
+	MarketSide string `json:"market_side"`
+	Shares     string `json:"shares"`
 }
 
 // BalanceResponse represents the response for GET /account/balance.
 type BalanceResponse struct {
 	USDC           decimal.Decimal `json:"usdc"`
 	TotalValue     decimal.Decimal `json:"total_value"`
-	TotalTokens    int             `json:"total_tokens"`
 	TokenPositions []TokenPosition `json:"token_positions"`
 }
 

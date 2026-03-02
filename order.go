@@ -33,12 +33,13 @@ const (
 // OrderStatus represents the status of an order.
 // Terminal states: FILLED, CANCELLED, FAILED.
 const (
-	OrderStatusSubmitting = "SUBMITTING" // 订单已创建，资金已锁定，正在提交到平台
-	OrderStatusPending    = "PENDING"    // 平台已接收，挂单中
-	OrderStatusCancelling = "CANCELLING" // 用户请求取消，等待后台执行
-	OrderStatusFilled     = "FILLED"     // 已成交（终态）
-	OrderStatusCancelled  = "CANCELLED"  // 已取消（终态）
-	OrderStatusFailed     = "FAILED"     // 提交失败（终态）
+	OrderStatusSubmitting    = "SUBMITTING"     // 订单已创建，资金已锁定，正在提交到平台
+	OrderStatusPending       = "PENDING"        // 平台已接收，挂单中
+	OrderStatusPartialFilled = "PARTIAL_FILLED" // 部分成交，订单仍在平台上
+	OrderStatusCancelling    = "CANCELLING"     // 用户请求取消，等待后台执行
+	OrderStatusFilled        = "FILLED"         // 已成交（终态）
+	OrderStatusCancelled     = "CANCELLED"      // 已取消（终态）
+	OrderStatusFailed        = "FAILED"         // 提交失败（终态）
 )
 
 // IsTerminalStatus returns true if the status is a terminal state (no further transitions).
@@ -48,7 +49,7 @@ func IsTerminalStatus(status string) bool {
 
 // IsCancellableStatus returns true if the status allows user-initiated cancellation.
 func IsCancellableStatus(status string) bool {
-	return status == OrderStatusSubmitting || status == OrderStatusPending
+	return status == OrderStatusSubmitting || status == OrderStatusPending || status == OrderStatusPartialFilled
 }
 
 // ---- Request types ----
