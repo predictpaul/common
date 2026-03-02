@@ -38,18 +38,11 @@ type SettleResult struct {
 
 // ---- Balance ----
 
-// BalanceMarketFilter represents a market filter for balance queries.
-// Type uses short names: poly / kalshi / opinion.
-type BalanceMarketFilter struct {
-	Type string `json:"type"` // poly / kalshi / opinion
-	ID   string `json:"id"`   // market_id
-}
-
 // BalanceQuery represents query parameters for GET /account/balance.
 type BalanceQuery struct {
-	UserWallet string               `json:"user_wallet" form:"user_wallet"`
-	Side       string               `json:"side,omitempty" form:"side"`       // YES / NO
-	Markets    []BalanceMarketFilter `json:"markets,omitempty"`
+	UserWallet string         `json:"user_wallet" form:"user_wallet"`
+	Side       string         `json:"side,omitempty" form:"side"` // YES / NO
+	Markets    []MarketFilter `json:"markets,omitempty"`
 }
 
 // TokenPosition represents a token position in balance response.
@@ -143,6 +136,7 @@ type PortfolioQuery struct {
 type PortfolioResponse struct {
 	TotalPortfolioValue  string `json:"total_portfolio_value"`
 	USDCBalance          string `json:"usdc_balance"`
+	FrozenBalance        string `json:"frozen_balance"`
 	PositionsValue       string `json:"positions_value"`
 	TotalCost            string `json:"total_cost"`
 	UnrealizedPnL        string `json:"unrealized_pnl"`
