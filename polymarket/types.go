@@ -4,6 +4,11 @@
 //	go get github.com/predictpaul/common/polymarket
 package polymarket
 
+import (
+	"encoding/json"
+	"strconv"
+)
+
 // OrderStatus order status enumeration
 type OrderStatus string
 
@@ -173,7 +178,8 @@ type ClobRewardsInfo struct {
 	MaxSpread float64     `json:"max_spread"`
 }
 
-// ClobMarket represents CLOB API /markets/{condition_id} market data
+// ClobMarket represents market data from CLOB API or Gamma API.
+// CLOB API populates Tokens; Gamma API populates Outcomes/OutcomePrices/ClobTokenIds instead.
 type ClobMarket struct {
 	EnableOrderBook         bool            `json:"enable_order_book"`
 	Active                  bool            `json:"active"`
@@ -204,6 +210,11 @@ type ClobMarket struct {
 	Is5050Outcome           bool            `json:"is_50_50_outcome"`
 	Tokens                  []ClobToken     `json:"tokens"`
 	Tags                    []string        `json:"tags"`
+
+	// Gamma API fields (populated when fetching from gamma-api.polymarket.com)
+	Outcomes      string `json:"outcomes"`       // JSON string array, e.g. "[\"Yes\",\"No\"]"
+	OutcomePrices string `json:"outcomePrices"`   // JSON string array, e.g. "[\"0.55\",\"0.45\"]"
+	ClobTokenIds  string `json:"clobTokenIds"`   // JSON string array of token IDs
 }
 
 // IsClosed returns whether the market is closed (not accepting orders).
@@ -211,13 +222,53 @@ func (m *ClobMarket) IsClosed() bool {
 	return m.Closed || !m.AcceptingOrders
 }
 
+// GetTokens returns the effective token list.
+// If Tokens is populated (CLOB API), use it directly.
+// Otherwise parse Gamma API fields (Outcomes, OutcomePrices, ClobTokenIds) into ClobToken list.
+func (m *ClobMarket) GetTokens() []ClobToken {
+	if len(m.Tokens) > 0 {
+		return m.Tokens
+	}
+	if m.Outcomes == "" {
+		return nil
+	}
+
+	var outcomes []string
+	var prices []string
+	var tokenIDs []string
+	json.Unmarshal([]byte(m.Outcomes), &outcomes)
+	json.Unmarshal([]byte(m.OutcomePrices), &prices)
+	json.Unmarshal([]byte(m.ClobTokenIds), &tokenIDs)
+
+	tokens := make([]ClobToken, len(outcomes))
+	for i, outcome := range outcomes {
+		var price float64
+		var winner bool
+		if i < len(prices) {
+			price, _ = strconv.ParseFloat(prices[i], 64)
+			// Price == 1 means this outcome won
+			winner = price == 1
+		}
+		var tokenID string
+		if i < len(tokenIDs) {
+			tokenID = tokenIDs[i]
+		}
+		tokens[i] = ClobToken{
+			TokenID: tokenID,
+			Outcome: outcome,
+			Price:   price,
+			Winner:  winner,
+		}
+	}
+	return tokens
+}
+
 // IsSettled returns whether the market is settled (has a winner).
 func (m *ClobMarket) IsSettled() bool {
 	if !m.Closed {
 		return false
 	}
-	// Check if any token has a winner
-	for _, token := range m.Tokens {
+	for _, token := range m.GetTokens() {
 		if token.Winner {
 			return true
 		}
@@ -242,7 +293,7 @@ func (m *ClobMarket) GetUnifiedStatus() string {
 
 // GetResult returns the winning outcome ("Yes" or "No"), or empty if not settled.
 func (m *ClobMarket) GetResult() string {
-	for _, token := range m.Tokens {
+	for _, token := range m.GetTokens() {
 		if token.Winner {
 			return token.Outcome
 		}

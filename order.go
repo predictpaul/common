@@ -2,10 +2,61 @@ package common
 
 import "time"
 
-// OrderCreateRequest represents the request for POST /order/create.
+// ---- Market / Order enums ----
+
+// MarketType represents the market platform type.
+const (
+	MarketTypePolymarket = "POLYMARKET"
+	MarketTypeKalshi     = "KALSHI"
+	MarketTypeOpinion    = "OPINION"
+)
+
+// MarketSide represents the market outcome side.
+const (
+	MarketSideYES = "YES"
+	MarketSideNO  = "NO"
+)
+
+// OrderDirection represents the direction of an order.
+const (
+	OrderDirectionBUY  = "BUY"
+	OrderDirectionSELL = "SELL"
+)
+
+// OrderType represents the type of an order.
+const (
+	OrderTypeMarket = "MARKET"
+	OrderTypeLimit  = "LIMIT"
+	OrderTypeStop   = "STOP"
+)
+
+// OrderStatus represents the status of an order.
+// Terminal states: FILLED, CANCELLED, FAILED.
+const (
+	OrderStatusSubmitting = "SUBMITTING" // 订单已创建，资金已锁定，正在提交到平台
+	OrderStatusPending    = "PENDING"    // 平台已接收，挂单中
+	OrderStatusCancelling = "CANCELLING" // 用户请求取消，等待后台执行
+	OrderStatusFilled     = "FILLED"     // 已成交（终态）
+	OrderStatusCancelled  = "CANCELLED"  // 已取消（终态）
+	OrderStatusFailed     = "FAILED"     // 提交失败（终态）
+)
+
+// IsTerminalStatus returns true if the status is a terminal state (no further transitions).
+func IsTerminalStatus(status string) bool {
+	return status == OrderStatusFilled || status == OrderStatusCancelled || status == OrderStatusFailed
+}
+
+// IsCancellableStatus returns true if the status allows user-initiated cancellation.
+func IsCancellableStatus(status string) bool {
+	return status == OrderStatusSubmitting || status == OrderStatusPending
+}
+
+// ---- Request types ----
+
+// OrderCreateRequest represents a single order in a batch creation request.
 type OrderCreateRequest struct {
 	UserWallet      string `json:"user_wallet"`
-	MarketType      string `json:"market_type"`       // POLYMARKET / KALSHI
+	MarketType      string `json:"market_type"`       // POLYMARKET / KALSHI / OPINION
 	TokenID         string `json:"token_id"`
 	MarketID        string `json:"market_id"`
 	EventID         string `json:"event_id,omitempty"`
@@ -19,20 +70,40 @@ type OrderCreateRequest struct {
 	TakeProfitPrice string `json:"take_profit_price,omitempty"`
 }
 
-// OrderCreateResponse is the response for POST /order/create.
-// Same as OrderItem — both endpoints return model.Order.
-type OrderCreateResponse = OrderItem
+// BatchOrderCreateRequest represents a batch order creation request.
+// Common fields (user_wallet, market_side, order_direction) are top-level;
+// per-order fields are in the list array and inherit common fields if not set.
+type BatchOrderCreateRequest struct {
+	UserWallet     string               `json:"user_wallet"`
+	MarketSide     string               `json:"market_side"`     // YES / NO
+	OrderDirection string               `json:"order_direction"` // BUY / SELL
+	List           []OrderCreateRequest `json:"list"`
+}
 
-// OrderCancelAllRequest represents the request for POST /order/cancel-all.
+// OrderCancelRequest represents a request to cancel specific orders.
+type OrderCancelRequest struct {
+	UserWallet string   `json:"user_wallet"`
+	IDList     []string `json:"id_list"`
+}
+
+// OrderCancelAllRequest represents a request to cancel all active orders for a user.
 type OrderCancelAllRequest struct {
 	UserWallet string `json:"user_wallet"`
 }
 
-// CancelResult represents batch cancellation result.
+// ---- Response types ----
+
+// CancelResult represents the result of an async cancel operation.
 type CancelResult struct {
-	SuccessIDs []string `json:"success_ids"`
-	FailedIDs  []string `json:"failed_ids"`
+	AcceptedIDs []string `json:"accepted_ids"` // Orders accepted for cancellation (now CANCELLING)
+	RejectedIDs []string `json:"rejected_ids"` // Orders that cannot be cancelled (wrong status/owner/not found)
 }
+
+// OrderCreateResponse is the response for POST /order/create.
+// Same as OrderItem — both endpoints return model.Order.
+type OrderCreateResponse = OrderItem
+
+// ---- Query types ----
 
 // OrderStatusFilter represents order status filter type.
 type OrderStatusFilter string
@@ -57,6 +128,8 @@ type OrderListQuery struct {
 	PageSize     int               `json:"page_size,omitempty" form:"page_size"`
 }
 
+// ---- Item types ----
+
 // OrderItem represents an order returned by GET /order/list.
 // Mirrors model.Order JSON serialization.
 type OrderItem struct {
@@ -64,14 +137,13 @@ type OrderItem struct {
 	UserWallet      string     `json:"user_wallet"`
 	OrderTime       *time.Time `json:"order_time"`
 	MarketType      string     `json:"market_type"`
-	MarketAccountID string     `json:"market_account_id"`
 	MarketID        string     `json:"market_id"`
 	MarketOutID     string     `json:"market_out_id"`
 	EventID         string     `json:"event_id"`
 	MarketSide      string     `json:"market_side"`
-	MarketOrderID   string     `json:"market_order_id"`
 	TokenID         string     `json:"token_id"`
 	TokenAmount     string     `json:"token_amount"`
+	RequestedAmount string     `json:"requested_amount"`
 	OrderDirection  string     `json:"order_direction"`
 	OrderType       string     `json:"order_type"`
 	LimitPrice      string     `json:"limit_price"`
@@ -94,6 +166,8 @@ type OrderListResponse struct {
 	PageSize int         `json:"page_size"`
 	Orders   []OrderItem `json:"orders"`
 }
+
+// ---- Event order types ----
 
 // EventOrderItem represents an enriched order with price/cost/pnl info.
 type EventOrderItem struct {

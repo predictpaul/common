@@ -2,7 +2,9 @@ package common
 
 import "github.com/shopspring/decimal"
 
-// RechargeRequest represents the request for POST /account/recharge.
+// ---- Deposit / Withdraw ----
+
+// RechargeRequest represents the request for POST /account/deposit.
 type RechargeRequest struct {
 	UserWallet    string `json:"user_wallet"`
 	UserTxHash    string `json:"user_tx_hash"`
@@ -19,6 +21,8 @@ type WithdrawRequest struct {
 	Amount     string `json:"amount"`
 }
 
+// ---- Settlement ----
+
 // SettleRequest represents the request for POST /account/settle.
 type SettleRequest struct {
 	UserWallet string `json:"user_wallet"`
@@ -30,6 +34,13 @@ type SettleResult struct {
 	TokenID string `json:"token_id"`
 	Success bool   `json:"success"`
 	Message string `json:"message"`
+}
+
+// ---- Balance ----
+
+// BalanceQuery represents query parameters for GET /account/balance.
+type BalanceQuery struct {
+	UserWallet string `json:"user_wallet" form:"user_wallet"`
 }
 
 // TokenPosition represents a token position in balance response.
@@ -52,11 +63,15 @@ type BalanceResponse struct {
 	TokenPositions []TokenPosition `json:"token_positions"`
 }
 
+// ---- Market filter ----
+
 // MarketFilter represents a market filter for positions and orders queries.
 type MarketFilter struct {
 	ID     string `json:"id"`
 	Source string `json:"source"`
 }
+
+// ---- Positions ----
 
 // PositionQuery represents query parameters for GET /account/positions.
 type PositionQuery struct {
@@ -84,9 +99,9 @@ type PositionItem struct {
 	CurrentValue         string `json:"current_value"`
 	UnrealizedPnL        string `json:"unrealized_pnl"`
 	UnrealizedPnLPercent string `json:"unrealized_pnl_percent"`
-	IsSettle             bool   `json:"is_settle"`
-	MarketStatus         string `json:"market_status"` // open, closed, settled
-	MarketResult         string `json:"market_result"` // yes, no, or empty
+	IsSettle             bool   `json:"is_settle"`     // 用户是否已结算
+	MarketStatus         string `json:"market_status"` // 市场状态: open, closed, settled
+	MarketResult         string `json:"market_result"` // 市场结果: yes, no, 或空
 }
 
 // PositionResponse represents the response for GET /account/positions.
@@ -97,11 +112,21 @@ type PositionResponse struct {
 	Positions []PositionItem `json:"positions"`
 }
 
+// ---- Rewards ----
+
+// RewardsQuery represents query parameters for GET /account/rewards.
+type RewardsQuery struct {
+	UserWallet string         `json:"user_wallet" form:"user_wallet"`
+	Markets    []MarketFilter `json:"markets,omitempty"`
+}
+
 // RewardsResponse represents the response for GET /account/rewards.
 type RewardsResponse struct {
 	TotalRewards string `json:"total_rewards"`
 	RewardCount  int    `json:"reward_count"`
 }
+
+// ---- Portfolio ----
 
 // PortfolioQuery represents query parameters for GET /account/portfolio.
 type PortfolioQuery struct {
@@ -120,6 +145,8 @@ type PortfolioResponse struct {
 	MaxPotential         string `json:"max_potential"`
 	PositionCount        int    `json:"position_count"`
 }
+
+// ---- Event PnL ----
 
 // EventPnLResponse represents the response for GET /account/event-pnl.
 type EventPnLResponse struct {
