@@ -69,6 +69,7 @@ type OrderCreateRequest struct {
 	SharesAmount    string `json:"shares_amount,omitempty"`
 	StopPrice       string `json:"stop_price,omitempty"`
 	TakeProfitPrice string `json:"take_profit_price,omitempty"`
+	IdempotencyKey  string `json:"idempotency_key,omitempty"`
 }
 
 // BatchOrderCreateRequest represents a batch order creation request.
@@ -78,6 +79,7 @@ type BatchOrderCreateRequest struct {
 	UserWallet     string               `json:"user_wallet"`
 	MarketSide     string               `json:"market_side"`     // YES / NO
 	OrderDirection string               `json:"order_direction"` // BUY / SELL
+	IdempotencyKey string               `json:"idempotency_key,omitempty"`
 	List           []OrderCreateRequest `json:"list"`
 }
 

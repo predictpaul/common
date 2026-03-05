@@ -453,3 +453,57 @@ type FlowListResponse struct {
 	PageSize int   `json:"page_size"`
 	Flows    []any `json:"flows"`
 }
+
+// =============================================================================
+// Transaction (Deposit / Withdraw) Types
+// =============================================================================
+
+// TransactionQuery represents deposit/withdraw transaction query parameters.
+// Either user_wallet (list mode) or tx_hash (single lookup) is required.
+type TransactionQuery struct {
+	UserWallet string `json:"user_wallet" form:"user_wallet"`
+	Type       string `json:"type" form:"type"`       // "deposit" or "withdraw"; empty = both
+	TxHash     string `json:"tx_hash" form:"tx_hash"` // optional: lookup single tx by hash
+	Status     string `json:"status" form:"status"`    // optional: "pending" / "success" / "failed"
+	Page       int    `json:"page" form:"page"`
+	PageSize   int    `json:"page_size" form:"page_size"`
+}
+
+// TransactionItem represents a single deposit or withdraw record
+type TransactionItem struct {
+	ID           string  `json:"id"`
+	Type         string  `json:"type"`                    // "deposit" or "withdraw"
+	Status       string  `json:"status"`                  // "pending" / "success" / "failed"
+	Amount       string  `json:"amount"`
+	ChainID      int     `json:"chain_id,omitempty"`
+	TxHash       string  `json:"tx_hash,omitempty"`
+	ErrorMessage string  `json:"error_message,omitempty"`
+	CreatedAt    string  `json:"created_at"`
+	ProcessedAt  *string `json:"processed_at,omitempty"`
+}
+
+// TransactionResponse represents paginated transaction list response
+type TransactionResponse struct {
+	Total    int64             `json:"total"`
+	Page     int               `json:"page"`
+	PageSize int               `json:"page_size"`
+	List     []TransactionItem `json:"list"`
+}
+
+// DepositResponse represents the response for an async deposit request
+type DepositResponse struct {
+	ID         string `json:"id"`
+	UserWallet string `json:"user_wallet"`
+	UserTxHash string `json:"user_tx_hash"`
+	Amount     string `json:"amount"`
+	Status     string `json:"status"`
+}
+
+// WithdrawResponse represents the response for an async withdraw request
+type WithdrawResponse struct {
+	ID         string `json:"id"`
+	UserWallet string `json:"user_wallet"`
+	Amount     string `json:"amount"`
+	Balance    string `json:"balance"`
+	Status     string `json:"status"`
+}
