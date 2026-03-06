@@ -128,19 +128,19 @@ type OrderHistoryQuery struct {
 
 // RechargeRequest represents a recharge request
 type RechargeRequest struct {
-	UserWallet    string          `json:"user_wallet" validate:"required"`
-	UserTxHash    string          `json:"user_tx_hash" validate:"required"`
-	ChainID       int             `json:"chain_id" validate:"required"`
-	TokenSymbol   string          `json:"token_symbol"`
-	TokenAmount   decimal.Decimal `json:"token_amount" binding:"required"`
-	TokenDecimals int             `json:"token_decimals" validate:"required"`
+	UserWallet  string          `json:"user_wallet" validate:"required"`
+	UserTxHash  string          `json:"user_tx_hash" validate:"required"`
+	ChainName   string          `json:"chain_name" validate:"required"`
+	TokenSymbol string          `json:"token_symbol" validate:"required"`
+	TokenAmount decimal.Decimal `json:"token_amount" binding:"required"`
 }
 
 // WithdrawRequest represents a withdraw request
 type WithdrawRequest struct {
-	UserWallet string          `json:"user_wallet" validate:"required"`
-	ChainID    int             `json:"chain_id" validate:"required"`
-	Amount     decimal.Decimal `json:"amount" validate:"required"`
+	UserWallet  string          `json:"user_wallet" validate:"required"`
+	ChainName   string          `json:"chain_name" validate:"required"`
+	TokenSymbol string          `json:"token_symbol"`
+	Amount      decimal.Decimal `json:"amount" validate:"required"`
 }
 
 // SettleRequest represents a settle request
@@ -217,7 +217,7 @@ type SettleResult struct {
 
 // BalanceResponse represents user balance response
 type BalanceResponse struct {
-	USDC           decimal.Decimal `json:"usdc"`
+	USD            decimal.Decimal `json:"usd"`
 	TotalValue     decimal.Decimal `json:"total_value"`
 	TotalTokens    int             `json:"total_tokens"`
 	TokenPositions []TokenPosition `json:"token_positions"`
@@ -289,7 +289,7 @@ type RewardsResponse struct {
 // PortfolioResponse represents portfolio overview response
 type PortfolioResponse struct {
 	TotalPortfolioValue  decimal.Decimal `json:"total_portfolio_value"`
-	USDCBalance          decimal.Decimal `json:"usdc_balance"`
+	USDBalance           decimal.Decimal `json:"usd_balance"`
 	PositionsValue       decimal.Decimal `json:"positions_value"`
 	TotalCost            decimal.Decimal `json:"total_cost"`
 	UnrealizedPnL        decimal.Decimal `json:"unrealized_pnl"`
@@ -472,10 +472,11 @@ type TransactionQuery struct {
 // TransactionItem represents a single deposit or withdraw record
 type TransactionItem struct {
 	ID           string  `json:"id"`
-	Type         string  `json:"type"`                    // "deposit" or "withdraw"
-	Status       string  `json:"status"`                  // "pending" / "success" / "failed"
+	Type         string  `json:"type"`                         // "deposit" or "withdraw"
+	Status       string  `json:"status"`                       // "pending" / "success" / "failed"
 	Amount       string  `json:"amount"`
 	ChainID      int     `json:"chain_id,omitempty"`
+	TokenSymbol  string  `json:"token_symbol,omitempty"`
 	TxHash       string  `json:"tx_hash,omitempty"`
 	ErrorMessage string  `json:"error_message,omitempty"`
 	CreatedAt    string  `json:"created_at"`
