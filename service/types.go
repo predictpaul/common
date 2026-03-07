@@ -126,8 +126,8 @@ type OrderHistoryQuery struct {
 // Account Request Types
 // =============================================================================
 
-// RechargeRequest represents a recharge request
-type RechargeRequest struct {
+// DepositRequest represents a deposit request
+type DepositRequest struct {
 	UserWallet  string          `json:"user_wallet" validate:"required"`
 	UserTxHash  string          `json:"user_tx_hash" validate:"required"`
 	ChainName   string          `json:"chain_name" validate:"required"`
@@ -482,26 +482,6 @@ type AccountInfoResponse struct {
 }
 
 // =============================================================================
-// History Types
-// =============================================================================
-
-// HistoryQuery represents unified history query parameters
-type HistoryQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-	Action     string `json:"action" form:"action"` // "trade", "deposit", "withdraw", "claim"; empty = all
-	Page       int    `json:"page" form:"page"`
-	PageSize   int    `json:"page_size" form:"page_size"`
-}
-
-// HistoryResponse represents unified history response
-type HistoryResponse struct {
-	Total    int64            `json:"total"`
-	Page     int              `json:"page"`
-	PageSize int              `json:"page_size"`
-	List     []map[string]any `json:"list"`
-}
-
-// =============================================================================
 // Transaction (Deposit / Withdraw) Types
 // =============================================================================
 
@@ -522,7 +502,7 @@ type TransactionItem struct {
 	Type         string  `json:"type"`                         // "deposit" or "withdraw"
 	Status       string  `json:"status"`                       // "pending" / "success" / "failed"
 	Amount       string  `json:"amount"`
-	ChainID      int     `json:"chain_id,omitempty"`
+	ChainName    string  `json:"chain_name,omitempty"`
 	TokenSymbol  string  `json:"token_symbol,omitempty"`
 	TxHash       string  `json:"tx_hash,omitempty"`
 	ErrorMessage string  `json:"error_message,omitempty"`

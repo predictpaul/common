@@ -4,11 +4,11 @@ import "github.com/shopspring/decimal"
 
 // ---- Deposit / Withdraw ----
 
-// RechargeRequest represents the request for POST /account/deposit.
-type RechargeRequest struct {
+// DepositRequest represents the request for POST /account/deposit.
+type DepositRequest struct {
 	UserWallet    string `json:"user_wallet"`
 	UserTxHash    string `json:"user_tx_hash"`
-	ChainID       int    `json:"chain_id"`
+	ChainName     string `json:"chain_name"`
 	TokenSymbol   string `json:"token_symbol,omitempty"`
 	TokenAmount   string `json:"token_amount"`
 	TokenDecimals int    `json:"token_decimals"`
@@ -143,24 +143,6 @@ type PortfolioResponse struct {
 	UnrealizedPnLPercent string `json:"unrealized_pnl_percent"`
 	MaxPotential         string `json:"max_potential"`
 	PositionCount        int    `json:"position_count"`
-}
-
-// ---- History ----
-
-// HistoryQuery represents query parameters for GET /account/history.
-type HistoryQuery struct {
-	UserWallet string `json:"user_wallet" form:"user_wallet"`
-	Action     string `json:"action,omitempty" form:"action"` // "trade", "deposit", "withdraw", "claim"; empty = all
-	Page       int    `json:"page,omitempty" form:"page"`
-	PageSize   int    `json:"page_size,omitempty" form:"page_size"`
-}
-
-// HistoryResponse represents the response for GET /account/history.
-type HistoryResponse struct {
-	Total    int64            `json:"total"`
-	Page     int              `json:"page"`
-	PageSize int              `json:"page_size"`
-	List     []map[string]any `json:"list"`
 }
 
 // ---- Event PnL ----
