@@ -455,6 +455,53 @@ type FlowListResponse struct {
 }
 
 // =============================================================================
+// Account Info Types
+// =============================================================================
+
+// DepositAddressItem represents a deposit address for a specific chain
+type DepositAddressItem struct {
+	ChainID       int    `json:"chain_id"`
+	ChainName     string `json:"chain_name"`
+	WalletAddress string `json:"wallet_address"`
+}
+
+// TokenInfoItem represents token info for a specific chain
+type TokenInfoItem struct {
+	ChainName    string `json:"chain_name"`
+	ChainID      int    `json:"chain_id"`
+	TokenName    string `json:"token_name"`
+	TokenAddress string `json:"token_address"`
+	TokenDecimal int    `json:"token_decimal"`
+}
+
+// AccountInfoResponse represents the response for GET /account/info
+type AccountInfoResponse struct {
+	DepositAddress []DepositAddressItem `json:"deposit_address"`
+	TokenInfo      []TokenInfoItem      `json:"token_info"`
+	NetworkFee     map[string]string    `json:"network_fee"`
+}
+
+// =============================================================================
+// History Types
+// =============================================================================
+
+// HistoryQuery represents unified history query parameters
+type HistoryQuery struct {
+	UserWallet string `json:"user_wallet" form:"user_wallet"`
+	Action     string `json:"action" form:"action"` // "trade", "deposit", "withdraw", "claim"; empty = all
+	Page       int    `json:"page" form:"page"`
+	PageSize   int    `json:"page_size" form:"page_size"`
+}
+
+// HistoryResponse represents unified history response
+type HistoryResponse struct {
+	Total    int64            `json:"total"`
+	Page     int              `json:"page"`
+	PageSize int              `json:"page_size"`
+	List     []map[string]any `json:"list"`
+}
+
+// =============================================================================
 // Transaction (Deposit / Withdraw) Types
 // =============================================================================
 
