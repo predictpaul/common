@@ -56,7 +56,7 @@ type TokenPosition struct {
 
 // BalanceResponse represents the response for GET /account/balance.
 type BalanceResponse struct {
-	USDC           decimal.Decimal `json:"usdc"`
+	USD            decimal.Decimal `json:"usd"`
 	TotalValue     decimal.Decimal `json:"total_value"`
 	TokenPositions []TokenPosition `json:"token_positions"`
 }
@@ -135,7 +135,7 @@ type PortfolioQuery struct {
 // PortfolioResponse represents the response for GET /account/portfolio.
 type PortfolioResponse struct {
 	TotalPortfolioValue  string `json:"total_portfolio_value"`
-	USDCBalance          string `json:"usdc_balance"`
+	USDBalance           string `json:"usd_balance"`
 	FrozenBalance        string `json:"frozen_balance"`
 	PositionsValue       string `json:"positions_value"`
 	TotalCost            string `json:"total_cost"`
@@ -143,6 +143,24 @@ type PortfolioResponse struct {
 	UnrealizedPnLPercent string `json:"unrealized_pnl_percent"`
 	MaxPotential         string `json:"max_potential"`
 	PositionCount        int    `json:"position_count"`
+}
+
+// ---- History ----
+
+// HistoryQuery represents query parameters for GET /account/history.
+type HistoryQuery struct {
+	UserWallet string `json:"user_wallet" form:"user_wallet"`
+	Action     string `json:"action,omitempty" form:"action"` // "trade", "deposit", "withdraw", "claim"; empty = all
+	Page       int    `json:"page,omitempty" form:"page"`
+	PageSize   int    `json:"page_size,omitempty" form:"page_size"`
+}
+
+// HistoryResponse represents the response for GET /account/history.
+type HistoryResponse struct {
+	Total    int64            `json:"total"`
+	Page     int              `json:"page"`
+	PageSize int              `json:"page_size"`
+	List     []map[string]any `json:"list"`
 }
 
 // ---- Event PnL ----
