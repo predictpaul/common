@@ -519,8 +519,8 @@ type TransactionResponse struct {
 	List     []TransactionItem `json:"list"`
 }
 
-// ClaimQuery represents query parameters for GET /account/claims
-type ClaimQuery struct {
+// ClaimRequest represents query parameters for GET /account/claims
+type ClaimRequest struct {
 	UserWallet string `json:"user_wallet" form:"user_wallet"`
 	Page       int    `json:"page" form:"page"`
 	PageSize   int    `json:"page_size" form:"page_size"`
