@@ -502,8 +502,9 @@ type TransactionItem struct {
 	Type         string  `json:"type"`                         // "deposit" or "withdraw"
 	Status       string  `json:"status"`                       // "pending" / "success" / "failed"
 	Amount       string  `json:"amount"`
-	ChainName    string  `json:"chain_name,omitempty"`
-	TokenSymbol  string  `json:"token_symbol,omitempty"`
+	Fee          string  `json:"fee,omitempty"`
+	ChainName    string  `json:"chain_name"`
+	TokenSymbol  string  `json:"token_symbol"`
 	TxHash       string  `json:"tx_hash,omitempty"`
 	ErrorMessage string  `json:"error_message,omitempty"`
 	CreatedAt    string  `json:"created_at"`
@@ -518,6 +519,35 @@ type TransactionResponse struct {
 	List     []TransactionItem `json:"list"`
 }
 
+// ClaimQuery represents query parameters for GET /account/claims
+type ClaimQuery struct {
+	UserWallet string `json:"user_wallet" form:"user_wallet"`
+	Page       int    `json:"page" form:"page"`
+	PageSize   int    `json:"page_size" form:"page_size"`
+}
+
+// ClaimItem represents a single claim (settle) record
+type ClaimItem struct {
+	ID           string `json:"id"`
+	Action       string `json:"action"`
+	Status       string `json:"status"`
+	MarketID     string `json:"market_id"`
+	EventID      string `json:"event_id"`
+	MarketSide   string `json:"market_side"`
+	TokenID      string `json:"token_id"`
+	SharesAmount string `json:"shares_amount"`
+	USD          string `json:"usd"`
+	CreatedAt    string `json:"created_at"`
+}
+
+// ClaimResponse represents paginated claim list response
+type ClaimResponse struct {
+	Total    int64      `json:"total"`
+	Page     int        `json:"page"`
+	PageSize int        `json:"page_size"`
+	List     []ClaimItem `json:"list"`
+}
+
 // DepositResponse represents the response for an async deposit request
 type DepositResponse struct {
 	ID         string `json:"id"`
@@ -529,9 +559,12 @@ type DepositResponse struct {
 
 // WithdrawResponse represents the response for an async withdraw request
 type WithdrawResponse struct {
-	ID         string `json:"id"`
-	UserWallet string `json:"user_wallet"`
-	Amount     string `json:"amount"`
-	Balance    string `json:"balance"`
-	Status     string `json:"status"`
+	ID          string `json:"id"`
+	UserWallet  string `json:"user_wallet"`
+	Amount      string `json:"amount"`
+	Fee         string `json:"fee"`
+	ChainName   string `json:"chain_name"`
+	TokenSymbol string `json:"token_symbol"`
+	Balance     string `json:"balance"`
+	Status      string `json:"status"`
 }

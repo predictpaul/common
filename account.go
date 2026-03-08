@@ -16,9 +16,10 @@ type DepositRequest struct {
 
 // WithdrawRequest represents the request for POST /account/withdraw.
 type WithdrawRequest struct {
-	UserWallet string `json:"user_wallet"`
-	ChainID    int    `json:"chain_id"`
-	Amount     string `json:"amount"`
+	UserWallet  string `json:"user_wallet"`
+	ChainName   string `json:"chain_name"`
+	TokenSymbol string `json:"token_symbol,omitempty"`
+	Amount      string `json:"amount"`
 }
 
 // ---- Settlement ----
