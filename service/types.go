@@ -531,6 +531,7 @@ type ClaimItem struct {
 	ID           string `json:"id"`
 	Action       string `json:"action"`
 	Status       string `json:"status"`
+	MarketType   string `json:"market_type"`
 	MarketID     string `json:"market_id"`
 	EventID      string `json:"event_id"`
 	MarketSide   string `json:"market_side"`
