@@ -29,6 +29,9 @@ type OrderCreateRequest struct {
 	SharesAmount    decimal.Decimal `json:"shares_amount"`
 	StopPrice       decimal.Decimal `json:"stop_price"`
 	TakeProfitPrice decimal.Decimal `json:"take_profit_price"`
+	IdempotencyKey  string          `json:"idempotency_key,omitempty"`
+	FeesEnabled     bool            `json:"fees_enabled"`
+	MarketTags      []string        `json:"market_tags"`
 }
 
 // BatchOrderCreateRequest represents a batch order creation request.
@@ -38,6 +41,7 @@ type BatchOrderCreateRequest struct {
 	UserWallet     string               `json:"user_wallet"`
 	MarketSide     string               `json:"market_side"`
 	OrderDirection string               `json:"order_direction"`
+	IdempotencyKey string               `json:"idempotency_key,omitempty"`
 	List           []OrderCreateRequest `json:"list"`
 }
 
@@ -65,8 +69,8 @@ type OrderCancelMarketRequest struct {
 
 // CancelResult represents batch cancellation result
 type CancelResult struct {
-	SuccessIDs []string `json:"success_ids"`
-	FailedIDs  []string `json:"failed_ids"`
+	AcceptedIDs []string `json:"accepted_ids"`
+	RejectedIDs []string `json:"rejected_ids"`
 }
 
 // =============================================================================
@@ -321,6 +325,7 @@ type EventOrderItem struct {
 	MarketSide      string          `json:"market_side"`
 	TokenID         string          `json:"token_id"`
 	TokenAmount     decimal.Decimal `json:"token_amount"`
+	RequestedAmount decimal.Decimal `json:"requested_amount"`
 	OrderDirection  string          `json:"order_direction"`
 	OrderType       string          `json:"order_type"`
 	LimitPrice      decimal.Decimal `json:"limit_price"`
@@ -332,6 +337,8 @@ type EventOrderItem struct {
 	FilledPrice     decimal.Decimal `json:"filled_price"`
 	FeesPaid        decimal.Decimal `json:"fees_paid"`
 	Status          string          `json:"status"`
+	FeesEnabled     bool            `json:"fees_enabled"`
+	MarketTags      []string        `json:"market_tags"`
 	CurrentPrice    decimal.Decimal `json:"current_price"`
 	AvgCost         decimal.Decimal `json:"avg_cost"`
 	CurrentValue    decimal.Decimal `json:"current_value"`
@@ -426,6 +433,8 @@ type OrderItem struct {
 	FilledPrice     decimal.Decimal `json:"filled_price"`
 	FeesPaid        decimal.Decimal `json:"fees_paid"`
 	Status          string          `json:"status"`
+	FeesEnabled     bool            `json:"fees_enabled"`
+	MarketTags      []string        `json:"market_tags"`
 	CreatedAt       time.Time       `json:"created_at"`
 	UpdatedAt       time.Time       `json:"updated_at"`
 }
