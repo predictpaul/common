@@ -56,20 +56,22 @@ func IsCancellableStatus(status string) bool {
 
 // OrderCreateRequest represents a single order in a batch creation request.
 type OrderCreateRequest struct {
-	UserWallet      string `json:"user_wallet"`
-	MarketType      string `json:"market_type"`       // POLYMARKET / KALSHI / OPINION
-	TokenID         string `json:"token_id"`
-	MarketID        string `json:"market_id"`
-	EventID         string `json:"event_id,omitempty"`
-	MarketSide      string `json:"market_side"`       // YES / NO
-	OrderDirection  string `json:"order_direction"`   // BUY / SELL
-	OrderType       string `json:"order_type"`        // MARKET / LIMIT / STOP
-	TokenAmount     string `json:"token_amount,omitempty"`
-	LimitPrice      string `json:"limit_price,omitempty"`
-	SharesAmount    string `json:"shares_amount,omitempty"`
-	StopPrice       string `json:"stop_price,omitempty"`
-	TakeProfitPrice string `json:"take_profit_price,omitempty"`
-	IdempotencyKey  string `json:"idempotency_key,omitempty"`
+	UserWallet      string   `json:"user_wallet"`
+	MarketType      string   `json:"market_type"`       // POLYMARKET / KALSHI / OPINION
+	TokenID         string   `json:"token_id"`
+	MarketID        string   `json:"market_id"`
+	EventID         string   `json:"event_id,omitempty"`
+	MarketSide      string   `json:"market_side"`       // YES / NO
+	OrderDirection  string   `json:"order_direction"`   // BUY / SELL
+	OrderType       string   `json:"order_type"`        // MARKET / LIMIT / STOP
+	TokenAmount     string   `json:"token_amount,omitempty"`
+	LimitPrice      string   `json:"limit_price,omitempty"`
+	SharesAmount    string   `json:"shares_amount,omitempty"`
+	StopPrice       string   `json:"stop_price,omitempty"`
+	TakeProfitPrice string   `json:"take_profit_price,omitempty"`
+	IdempotencyKey  string   `json:"idempotency_key,omitempty"`
+	FeesEnabled     bool     `json:"fees_enabled,omitempty"`      // 是否启用手续费（Polymarket 部分市场启用）
+	MarketTags      []string `json:"market_tags,omitempty"`       // 市场标签，用于判断手续费类型 e.g. ["crypto","Bitcoin"] / ["sport","NCAAB"]
 }
 
 // BatchOrderCreateRequest represents a batch order creation request.
@@ -158,6 +160,8 @@ type OrderItem struct {
 	FilledPrice     string     `json:"filled_price"`
 	FeesPaid        string     `json:"fees_paid"`
 	Status          string     `json:"status"`
+	FeesEnabled     bool       `json:"fees_enabled"`
+	MarketTags      []string   `json:"market_tags"`
 	CreatedAt       time.Time  `json:"created_at"`
 	UpdatedAt       time.Time  `json:"updated_at"`
 }
@@ -193,6 +197,8 @@ type EventOrderItem struct {
 	FilledPrice     string     `json:"filled_price"`
 	FeesPaid        string     `json:"fees_paid"`
 	Status          string     `json:"status"`
+	FeesEnabled     bool       `json:"fees_enabled"`
+	MarketTags      []string   `json:"market_tags"`
 	CurrentPrice    string     `json:"current_price"`
 	AvgCost         string     `json:"avg_cost"`
 	CurrentValue    string     `json:"current_value"`
